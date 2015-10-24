@@ -1,0 +1,12 @@
+{
+    "name": "ingwiephoenix/bird3-flipflop",
+    "description": "Super small view engine for those that want to play it safe.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ingwie Phoenix",
+            "email": "ingwie2000@googlemail.com"
+        }
+    ],
+    "require": {}
+}

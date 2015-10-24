@@ -1,6 +1,7 @@
 {
     "name": "ingwiephoenix/bird3-flipflop",
     "description": "Super small view engine for those that want to play it safe.",
+    "version": "0.1.0",
     "license": "MIT",
     "authors": [
         {

@@ -9,5 +9,10 @@
             "email": "ingwie2000@googlemail.com"
         }
     ],
-    "require": {}
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "BIRD3\\Extensions\\": "./"
+        }
+    }
 }

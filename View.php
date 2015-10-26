@@ -3,21 +3,25 @@
 use \Exception;
 use \Closure;
 use \BIRD3\Extensions\FlipFlop\Engine;
+use \Illuminate\Contracts\View\View as ViewContract;
 
-class View {
+class View implements ViewContract {
     private $viewFile;
     private $templateFile;
     private $args = [];
     private $engineClass;
+    private $eventCB;
 
-    public function __construct($viewFile, $templateFile, $args, $engineClass = Engine::class) {
+    public function __construct($viewFile, $templateFile, $args, $evCB, $engineClass = Engine::class) {
         $this->viewFile = $viewFile;
         $this->templateFile = $templateFile;
         $this->args = $args;
+        $this->eventCB = $evCB;
         $this->engineClass = $engineClass;
     }
 
     public function __invoke($args = []) {
+        $this->eventCB();
         $args = array_replace_recursive($this->args, $args);
         $engineClass = $this->engineClass;
         $engine = new $engineClass;
@@ -56,5 +60,17 @@ class View {
     }
     public function replace($args) {
         $this->args = $args;
+    }
+
+    # Interface conform
+    public function render() {
+        return $this->__invoke();
+    }
+    public function with($key, $value=null) {
+        $this->attach($key, $value);
+        return $this;
+    }
+    public function name() {
+        return $this->templateFile;
     }
 }

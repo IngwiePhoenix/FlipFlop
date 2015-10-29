@@ -96,7 +96,7 @@ class Manager implements ViewFactory {
         };
     }
 
-    public function load($name, $args = [], $layout = null, $class = Engine::class) {
+    public function load($name, $args = [], $mergedata = [], $layout = null, $class = Engine::class) {
         $viewFile = $this->resolveView($name);
         $templateFile = $this->resolveTemplate($layout);
         $data = $this->makeData($args);
@@ -104,9 +104,10 @@ class Manager implements ViewFactory {
         return new View($viewFile, $templateFile, $data, $cb, $class);
     }
 
-    public function make($name, $args = [], $layout = null, $class = null) {
-        $view = $this->load($name, $this->makeData($args), $layout, $class);
-        return $view();
+    public function make($name, $args = [], $mergeData = [], $layout = null, $class = null) {
+        $view = $this->load($name, $this->makeData($args), [], $layout, $class);
+        $out = $view();
+        return $out;
     }
 
     public function resolveView($path) {

@@ -12,23 +12,24 @@ class View implements ViewContract {
     private $engineClass;
     private $eventCB;
 
-    public function __construct($viewFile, $templateFile, $args, $evCB, $engineClass = Engine::class) {
+    public function __construct($viewFile, $templateFile, $args, $evCB, $engineClass = null) {
         $this->viewFile = $viewFile;
         $this->templateFile = $templateFile;
         $this->args = $args;
         $this->eventCB = $evCB;
-        $this->engineClass = $engineClass;
+        $this->engineClass = ($engineClass == null ? Engine::class : $engineClass);
     }
 
     public function __invoke($args = []) {
-        $this->eventCB();
+        $cb = $this->eventCB;
+        $cb();
         $args = array_replace_recursive($this->args, $args);
         $engineClass = $this->engineClass;
         $engine = new $engineClass;
         $makeContent = function($viewFile, $args) {
             extract($args);
             ob_start();
-            require_once($viewFile);
+            require($viewFile);
             $contents = ob_get_contents();
             ob_end_clean();
             return $contents;
@@ -37,7 +38,7 @@ class View implements ViewContract {
         $makePage = function($templateFile, $args, $content) {
             extract($args);
             ob_start();
-            require_once($templateFile);
+            require($templateFile);
             $page = ob_get_contents();
             ob_end_clean();
             return $page;

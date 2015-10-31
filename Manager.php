@@ -98,7 +98,11 @@ class Manager implements ViewFactory {
 
     public function load($name, $args = [], $mergedata = [], $layout = null, $class = Engine::class) {
         $viewFile = $this->resolveView($name);
-        $templateFile = $this->resolveTemplate($layout);
+        if($layout == false) {
+            $templateFile = null;
+        } else {
+            $templateFile = $this->resolveTemplate($layout);
+        }
         $data = $this->makeData($args);
         $cb = $this->getEventTrigger();
         return new View($viewFile, $templateFile, $data, $cb, $class);
@@ -109,6 +113,13 @@ class Manager implements ViewFactory {
         $out = $view();
         return $out;
     }
+
+    public function makePartial($name, $args = [], $class = null) {
+        $view = $this->load($name, $this->makeData($args), [], false, $class);
+        $out = $view();
+        return $out;
+    }
+
 
     public function resolveView($path) {
         // Short-circuit this if possible.
@@ -134,10 +145,14 @@ class Manager implements ViewFactory {
     public function resolveTemplate($name=null) {
         $sp = DIRECTORY_SEPARATOR;
         $name = (!is_null($name) ? $name : $this->defaultTemplate);
-        foreach($this->templates as $tPath) {
-            $p = "{$tPath}{$sp}{$name}.php";
-            if(file_exists($p)) {
-                return $p;
+        if(file_exists($name)) {
+            return $name;
+        } else {
+            foreach($this->templates as $tPath) {
+                $p = "{$tPath}{$sp}{$name}.php";
+                if(file_exists($p)) {
+                    return $p;
+                }
             }
         }
         throw new Exception("Unable to resolve template <$name>.");

@@ -25,6 +25,17 @@ class Manager {
         return $view;
     }
 
+    public function partial($view, $data = []) {
+        $view = View::make($view, array_merge($data, ["__partial__" => true]));
+        return $view;
+    }
+
+    public function partialWithContext($view, $data = [], $ctx) {
+        $view = $this->partial($view, $data);
+        $view->getEngine()->setContext($ctx);
+        return $view;
+    }
+
     public function getDefaultContext() {
         return new Context($this);
     }
